@@ -20,7 +20,7 @@ func main() {
 	flag.Parse()
 
 	if *versionFlag {
-		fmt.Println(version, date, commit)
+		fmt.Printf("fileserver version: %s, date: %s, commit: %s\n", version, date, commit)
 		os.Exit(0)
 	}
 
