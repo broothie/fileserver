@@ -10,7 +10,7 @@ import (
 
 func main() {
 	dir := flag.String("d", ".", "directory to serve from")
-	port := flag.String("p", "8080", "port to serve at")
+	port := flag.String("p", "8080", "port to serve on")
 	flag.Parse()
 
 	log := log.New(os.Stdout, "[fileserver] ", log.LstdFlags)
