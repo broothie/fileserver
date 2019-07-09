@@ -1,8 +1,11 @@
 
-all: tag update_install-sh
+all: update_install-sh tag
 	source .env && goreleaser
 
 tag:
+	git add -A
+	git commit -m "${msg}"
+	git push
 	git tag -a "${version}" -m "${msg}"
 	git push origin ${version}
 

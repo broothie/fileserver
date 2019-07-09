@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 if [[ -z $version ]]; then
-    version="0.1.6"
+    version="0.1.7"
 fi
 
 filename="fileserver_${version}_${os}_${arch}.tar.gz"
