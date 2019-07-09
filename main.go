@@ -10,9 +10,7 @@ import (
 )
 
 var (
-	version string
-	commit string
-	date time.Time
+	version, commit, date string
 )
 
 func main() {
@@ -37,7 +35,7 @@ func loggerMiddleware(log *log.Logger) func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			recorder := &statusRecorder{
 				ResponseWriter: w,
-				statusCode: http.StatusOK,
+				statusCode:     http.StatusOK,
 			}
 
 			before := time.Now()
