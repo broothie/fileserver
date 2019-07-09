@@ -33,3 +33,7 @@ changelog:
     - '^docs:'
     - '^test:'
     - README.md
+    - install.sh
+    - .gitignore
+    - main.go
+    - Makefile
