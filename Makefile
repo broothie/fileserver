@@ -3,7 +3,8 @@ all: tag
 	goreleaser
 
 tag:
-	git commit -am "${msg}"
+	git add -A
+	git commit -m "${msg}"
 	git push
 	git tag -a "v${version}" -m "${msg}"
 	git push origin v${version}
