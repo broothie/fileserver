@@ -42,7 +42,7 @@ func loggerMiddleware(log *log.Logger) func(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 			elapsed := time.Since(before)
 
-			log.Printf("%s %s%s | %v | %d \n", r.Method, r.URL.Path, r.URL.RawQuery, elapsed, recorder.statusCode)
+			log.Printf("%s %s%s | %v | %d %s \n", r.Method, r.URL.Path, r.URL.RawQuery, elapsed, recorder.statusCode, http.StatusText(recorder.statusCode))
 		})
 	}
 }
