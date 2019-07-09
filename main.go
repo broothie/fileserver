@@ -26,8 +26,23 @@ func main() {
 
 	log := log.New(os.Stdout, "[fileserver] ", log.LstdFlags)
 
+	var handler http.Handler = http.FileServer(http.Dir(*dir))
+	handler = cacheMiddleware(handler)
+	handler = loggerMiddleware(log)(handler)
+
 	log.Printf("fileserver running @ :%s\n", *port)
-	log.Panic(http.ListenAndServe(":"+*port, loggerMiddleware(log)(http.FileServer(http.Dir(*dir)))))
+	log.Panic(http.ListenAndServe(":"+*port, handler))
+}
+
+func cacheMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// https://stackoverflow.com/a/2068407
+		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
+		w.Header().Set("Pragma", "no-cache")                                   // HTTP 1.0.
+		w.Header().Set("Expires", "0")                                         // Proxies.
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 func loggerMiddleware(log *log.Logger) func(next http.Handler) http.Handler {
