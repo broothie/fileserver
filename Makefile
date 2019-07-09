@@ -1,5 +1,5 @@
 
-all: update_install-sh tag
+all: clean update_install-sh tag
 	source .env && goreleaser
 
 tag:
