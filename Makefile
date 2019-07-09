@@ -5,7 +5,7 @@ all: update_install-sh tag
 tag:
 	git add -A
 	git commit -m "${msg}"
-	git push
+	git push || true
 	git tag -a "${version}" -m "${msg}"
 	git push origin ${version}
 
