@@ -10,6 +10,7 @@ build:
   goarch:
     - amd64
     - 386
+  ldflags:
 
 archive:
   format: tar.gz

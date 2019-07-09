@@ -2,16 +2,29 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"time"
 )
 
+var (
+	version string
+	commit string
+	date time.Time
+)
+
 func main() {
 	dir := flag.String("d", ".", "directory to serve from")
 	port := flag.String("p", "8080", "port to serve on")
+	versionFlag := flag.Bool("v", false, "fileserver version")
 	flag.Parse()
+
+	if *versionFlag {
+		fmt.Println(version, date, commit)
+		os.Exit(0)
+	}
 
 	log := log.New(os.Stdout, "[fileserver] ", log.LstdFlags)
 
