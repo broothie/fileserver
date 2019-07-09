@@ -6,8 +6,8 @@ tag:
 	git add -A
 	git commit -m "${msg}"
 	git push || true
-	git tag -a "${version}" -m "${msg}"
-	git push origin ${version}
+	git tag -a "v${version}" -m "${msg}"
+	git push origin "v${version}"
 
 test:
 	goreleaser --snapshot --skip-publish --rm-dist
