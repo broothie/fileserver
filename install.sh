@@ -1,6 +1,6 @@
 
 if [[ -z $version ]]; then
-    version="0.1.19"
+    version="0.1.20"
 fi
 
 filename="fileserver_${version}_${os}_${arch}.tar.gz"
