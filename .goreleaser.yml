@@ -21,6 +21,7 @@ changelog:
 brews:
   - homepage: 'https://github.com/fileserver'
     description: 'fileserver - a fileserver'
+    folder: Formula
     github:
       owner: broothie
       name: homebrew-fileserver
