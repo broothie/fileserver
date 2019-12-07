@@ -24,50 +24,62 @@ func main() {
 		os.Exit(0)
 	}
 
-	log := log.New(os.Stdout, "[fileserver] ", log.LstdFlags)
+	logger := log.New(os.Stdout, "[fileserver] ", 0)
 
 	handler := http.FileServer(http.Dir(*dir))
 	handler = cacheMiddleware(handler)
-	handler = loggerMiddleware(log)(handler)
+	handler = loggerMiddleware(logger)(handler)
 
-	log.Printf("fileserver running @ :%s\n", *port)
-	log.Panic(http.ListenAndServe(":"+*port, handler))
+	logger.Printf("running @ http://localhost:%s\n", *port)
+	logger.Panic(http.ListenAndServe(":"+*port, handler))
 }
 
 func cacheMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		next.ServeHTTP(w, r)
+
 		// https://stackoverflow.com/a/2068407
 		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 		w.Header().Set("Pragma", "no-cache")                                   // HTTP 1.0.
 		w.Header().Set("Expires", "0")                                         // Proxies.
-
-		next.ServeHTTP(w, r)
 	})
 }
 
-func loggerMiddleware(log *log.Logger) func(next http.Handler) http.Handler {
+func loggerMiddleware(logger *log.Logger) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			recorder := &statusRecorder{
-				ResponseWriter: w,
-				statusCode:     http.StatusOK,
-			}
+			recorder := &recorder{ResponseWriter: w, statusCode: http.StatusOK}
 
 			before := time.Now()
 			next.ServeHTTP(w, r)
 			elapsed := time.Since(before)
 
-			log.Printf("%s %s%s | %v | %d %s \n", r.Method, r.URL.Path, r.URL.RawQuery, elapsed, recorder.statusCode, http.StatusText(recorder.statusCode))
+			logger.Printf("%s %s%s %dB | %d %s %dB | %v \n",
+				r.Method,
+				r.URL.Path,
+				r.URL.RawQuery,
+				r.ContentLength,
+				recorder.statusCode,
+				http.StatusText(recorder.statusCode),
+				len(recorder.body),
+				elapsed,
+			)
 		})
 	}
 }
 
-type statusRecorder struct {
+type recorder struct {
 	http.ResponseWriter
 	statusCode int
+	body       []byte
 }
 
-func (r *statusRecorder) WriteHeader(statusCode int) {
+func (r *recorder) WriteHeader(statusCode int) {
 	r.statusCode = statusCode
 	r.ResponseWriter.WriteHeader(statusCode)
+}
+
+func (r *recorder) Write(body []byte) (int, error) {
+	r.body = body
+	return r.ResponseWriter.Write(body)
 }

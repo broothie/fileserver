@@ -1,40 +1,26 @@
 project_name: fileserver
 
-build:
-  env:
-  - CGO_ENABLED=0
-  goos:
-    - darwin
-    - linux
-    - windows
-  goarch:
-    - amd64
-    - 386
-  ldflags:
-
-archive:
-  format: tar.gz
-  format_overrides:
-    - goos: windows
-      format: zip
-  replacements:
-    amd64: x86_64
-    386: i386
+builds:
+  - main: ./cmd/fileserver/main.go
+    env:
+    - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - 386
 
 checksum:
   name_template: 'checksums.txt'
 
-snapshot:
-  name_template: "{{ .Tag }}-next"
-
 changelog:
   sort: asc
-  filters:
-    exclude:
-    - '^docs:'
-    - '^test:'
-    - README.md
-    - install.sh
-    - .gitignore
-    - main.go
-    - Makefile
+
+brews:
+  - homepage: 'https://github.com/fileserver'
+    description: 'fileserver - a fileserver'
+    github:
+      owner: broothie
+      name: homebrew-fileserver
